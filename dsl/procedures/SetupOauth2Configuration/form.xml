@@ -1,0 +1,49 @@
+<!--
+    This form is generated automatically from the parameters pluginspec.
+    Please not not edit this file manually as it will be regenerated.
+-->
+<editor>
+  <help>/commander/pages/@PLUGIN_NAME@/help?s=Administration&amp;ss=Plugins#SetupOauth2Configuration</help>
+  <formElement>
+    <type>entry</type>
+    <property>configName</property>
+    <required>1</required>
+    <label>Config Name:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>tenant</property>
+    <required>1</required>
+    <label>Tenant URL:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>app</property>
+    <required>1</required>
+    <label>Application ID:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>clientId</property>
+    <required>1</required>
+    <label>Client ID (waits for the bug):</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>clientSecret</property>
+    <required>1</required>
+    <label>Client Secret (waits for the bug):</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>scope</property>
+    <required>0</required>
+    <label>Scope:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>flowServerHostname</property>
+    <required>0</required>
+    <label>Flow Server Hostname:</label>
+  </formElement>
+</editor>

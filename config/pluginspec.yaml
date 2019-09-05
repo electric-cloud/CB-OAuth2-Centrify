@@ -1,0 +1,117 @@
+# This is default sample specification
+# Feel free to change it
+# Call flowpdk showdoc pluginspec to see the list of available fields and their description
+pluginName: 'CB-OAuth2-Centrify'
+version: '1.0.0'
+description: 'Generic Oauth2 Provider'
+author: 'Polina'
+authorUrl: 'No support, sorry'
+category: 'Security'
+
+# Plugin configuration description
+configuration:
+  # This is a declaration for the plugin configuration
+  shell: 'ec-perl'
+  # A set of fields will be added to process debug level in the configuration
+  hasDebugLevel: true
+  parameters:
+  -
+    name: config
+    documentation: The name for the created configuration
+    required: true
+    type: entry
+    label: Configuration Name
+  -
+    name: desc
+    documentation: Description for the configuration
+    required: false
+    type: null
+    label: Description
+  -
+    name: tenant
+    documentation: Tenant URL, e.g. https://aaa4173.my.idaptive.app
+    required: true
+    type: entry
+    label: Tenant
+  -
+    name: appId
+    documentation: Application Id
+    required: true
+    type: entry
+    label: Application ID
+  -
+    name: credential
+    documentation: Client ID and Client Secret
+    required: true
+    type: credential
+    label: Client ID and Secret
+  -
+    name: tokens_credential
+    documentation: Oauth2 Tokens
+    required: true
+    type: credential
+    label: Oauth2 Tokens
+  -
+    name: clientFlow
+    documentation: Client Flow Type
+    required: true
+    type: select
+    options:
+      - name: auth_code_flow
+        value: auth_code_flow
+
+procedures:
+
+- name: Whoami
+  hasConfig: true
+  shell: ec-perl
+
+-
+  name: Setup Oauth2 Configuration
+  description: This procedure will setup a configuration for oauth2
+  parameters:
+  -
+    name: configName
+    required: true
+    type: entry
+    label: Config Name
+  -
+    name: tenant
+    required: true
+    type: entry
+    label: Tenant URL
+  -
+    name: app
+    required: true
+    type: entry
+    label: Application ID
+  -
+    name: clientId
+    required: true
+    type: entry
+    label: Client ID (waits for the bug)
+  -
+    name: clientSecret
+    required: true
+    type: entry
+    label: Client Secret (waits for the bug)
+  -
+    name: scope
+    required: false
+    type: entry
+    label: Scope
+  -
+    name: flowServerHostname
+    required: false
+    type: entry
+    label: Flow Server Hostname
+
+
+  steps:
+    - name: Initiate Redirect
+      shell: ec-perl
+    - name: Wait for the Code
+      shell: ec-perl
+    - name: Finalize Configuration
+      shell: ec-perl
+

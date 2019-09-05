@@ -1,0 +1,82 @@
+<!--
+    This form is generated automatically from the parameters pluginspec.
+    Please not not edit this file manually as it will be regenerated.
+-->
+
+<editor>
+  <help>/commander/pages/@PLUGIN_NAME@/help?s=Administration&amp;ss=Plugins#CreateConfiguration</help>
+  <formElement>
+    <type>entry</type>
+    <property>config</property>
+    <required>1</required>
+    <documentation>The name for the created configuration</documentation>
+    <label>Configuration Name:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>desc</property>
+    <required>0</required>
+    <documentation>Description for the configuration</documentation>
+    <label>Description:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>tenant</property>
+    <required>1</required>
+    <documentation>Tenant URL, e.g. https://aaa4173.my.idaptive.app</documentation>
+    <label>Tenant:</label>
+  </formElement>
+  <formElement>
+    <type>entry</type>
+    <property>appId</property>
+    <required>1</required>
+    <documentation>Application Id</documentation>
+    <label>Application ID:</label>
+  </formElement>
+  <formElement>
+    <type>credential</type>
+    <property>credential</property>
+    <required>1</required>
+    <documentation>Client ID and Client Secret</documentation>
+    <label>Client ID and Secret:</label>
+    <attachedAsParameterToStep>createConfiguration</attachedAsParameterToStep>
+  </formElement>
+  <formElement>
+    <type>credential</type>
+    <property>tokens_credential</property>
+    <required>1</required>
+    <documentation>Oauth2 Tokens</documentation>
+    <label>Oauth2 Tokens:</label>
+    <attachedAsParameterToStep>createConfiguration</attachedAsParameterToStep>
+  </formElement>
+  <formElement>
+    <type>select</type>
+    <property>clientFlow</property>
+    <required>1</required>
+    <documentation>Client Flow Type</documentation>
+    <option>
+      <name>auth_code_flow</name>
+      <value>auth_code_flow</value>
+    </option>
+  </formElement>
+  <formElement>
+    <type>select</type>
+    <property>debugLevel</property>
+    <required>0</required>
+    <documentation>This option sets debug level for logs. If info is selected, only summary information will be shown, for debug, there will be some debug information and for trace the whole requests and responses will be shown.</documentation>
+    <label>Debug Level:</label>
+    <option>
+      <name>Info</name>
+      <value>0</value>
+    </option>
+    <option>
+      <name>Debug</name>
+      <value>1</value>
+    </option>
+    <option>
+      <name>Trace</name>
+      <value>2</value>
+    </option>
+    <value>0</value>
+  </formElement>
+</editor>
