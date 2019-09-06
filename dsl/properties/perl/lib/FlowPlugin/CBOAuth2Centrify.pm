@@ -37,16 +37,15 @@ sub initiateRedirect {
 
     $uri->query_form(
         response_type => 'code',
-        redirect_uri => $self->_generateRedirectUrl(),
+        redirect_uri => $self->_generateRedirectUrl($runtimeParameters),
         client_id => $runtimeParameters->{user},
         state => $base64_state,
         scope => $runtimeParameters->{scope},
     );
 
-    print $uri;
-
+    logInfo("Redirect URI: $uri");
     my $ec = ElectricCommander->new;
-    $ec->setProperty({propertyName => '/myJob/report-urls/Redirect', value => $uri});
+    $ec->setProperty({propertyName => '/myJob/report-urls/Redirect URI', value => $uri});
 }
 
 
@@ -58,9 +57,10 @@ sub waitForTheCode {
     my $ec = ElectricCommander->new;
     my $code = '';
     while(!$code) {
+        logInfo("Waiting for the auth code...");
         sleep(2);
         eval { $code = $ec->getPropertyValue('/myJob/cb_auth_code') };
-        print "Code: $code\n";
+        logInfo("Code: $code");
     }
 }
 
@@ -71,11 +71,11 @@ sub finalizeConfiguration {
     my ($self, $runtimeParameters, $stepResult) = @_;
 
     my $context = $self->getContext;
-    print Dumper $runtimeParameters;
 
     my $ec = ElectricCommander->new;
     my $auth_code = $ec->getPropertyValue('/myJob/cb_auth_code');
-    print "Code: $auth_code\n";
+
+    logInfo("Got Auth code: $auth_code");
 
     my $client_id = $runtimeParameters->{user};
     my $client_secret = $runtimeParameters->{password};
@@ -84,7 +84,7 @@ sub finalizeConfiguration {
 
     my $ua = LWP::UserAgent->new;
 
-    my $redirect_uri = $self->_generateRedirectUrl();
+    my $redirect_uri = $self->_generateRedirectUrl($runtimeParameters);
     my $grant_type = 'authorization_code';
 
     my $url = $tenant . '/oauth2/token/' . $app;
@@ -97,22 +97,29 @@ sub finalizeConfiguration {
       client_secret => $client_secret,
     ];
 
-    print Dumper $formvars;
+    logDebug("URL: $url");
+    logDebug($formvars);
 
     my $response = $ua->request(POST $url, $formvars);
 
-    print Dumper $response;
     unless ($response->is_success) {
-        die "Exchange failed";
+        bailOut("Failed to exchange authorization code for the pair of tokens");
     }
+
+    logInfo("Exchanged the auth code for the pair of tokens");
 
     my $json = decode_json($response->content);
     my $access_token = $json->{access_token};
     my $refresh_token = $json->{refresh_token};
 
-    # Saving config
+    unless($refresh_token) {
+        bailOut("Failed to get refresh token. Please ensure that your OAuth2 Provider issues refresh tokens.");
+    }
 
+    # Saving config
     my $configName = $runtimeParameters->{configName};
+
+    logInfo("Saving tokens into the configuration");
 
     my $jobId = $ec->runProcedure({
         procedureName => 'CreateConfiguration',
@@ -157,7 +164,7 @@ sub finalizeConfiguration {
         ]
     })->findvalue('//jobId');
 
-    print "JobID: $jobId";
+    logInfo("Configuration job ID: $jobId");
 
     $ec->setProperty({
         propertyName => '/myJob/report-urls/Config Job',
@@ -168,6 +175,7 @@ sub finalizeConfiguration {
     while($status ne 'completed') {
         $status = $ec->getJobStatus({jobId => $jobId})->findvalue('//status');
         sleep(2);
+        logInfo("Waiting for the configuration to complete, status $status...");
     }
 }
 
@@ -204,15 +212,17 @@ sub whoami {
     my $json = decode_json($response->content);
     print Dumper $json;
 }
+
+
 ## === step ends ===
 # Please do not remove the marker above, it is used to place new procedures into this file.
 
 
 
 sub _generateRedirectUrl {
-    my ($self, $runtimeParameters) = @_;
+    my ($self, $r) = @_;
 
-    my $hostname = 'vivarium2';
+    my $hostname = $r->{flowServerHostname} || '$[/server/hostName]';
     return 'https://' . $hostname . '/commander/pages/@PLUGIN_KEY@/oauth2_redirect_run';
 }
 
