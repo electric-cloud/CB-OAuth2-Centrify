@@ -85,16 +85,11 @@ procedures:
     required: true
     type: entry
     label: Application ID
-  -
-    name: clientId
+
+  - name: credential
     required: true
-    type: entry
-    label: Client ID (waits for the bug)
-  -
-    name: clientSecret
-    required: true
-    type: entry
-    label: Client Secret (waits for the bug)
+    type: credential
+    label: Client ID and Secret
   -
     name: scope
     required: false
@@ -105,7 +100,6 @@ procedures:
     required: false
     type: entry
     label: Flow Server Hostname
-
 
   steps:
     - name: Initiate Redirect

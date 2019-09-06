@@ -28,8 +28,6 @@ sub pluginInfo {
 sub initiateRedirect {
     my ($self, $runtimeParameters) = @_;
 
-    print Dumper $runtimeParameters;
-
     my $state = {
         jobId => $ENV{COMMANDER_JOBID}
     };
@@ -40,7 +38,7 @@ sub initiateRedirect {
     $uri->query_form(
         response_type => 'code',
         redirect_uri => $self->_generateRedirectUrl(),
-        client_id => $runtimeParameters->{clientId},
+        client_id => $runtimeParameters->{user},
         state => $base64_state,
         scope => $runtimeParameters->{scope},
     );
@@ -79,8 +77,8 @@ sub finalizeConfiguration {
     my $auth_code = $ec->getPropertyValue('/myJob/cb_auth_code');
     print "Code: $auth_code\n";
 
-    my $client_id = $runtimeParameters->{clientId};
-    my $client_secret = $runtimeParameters->{clientSecret};
+    my $client_id = $runtimeParameters->{user};
+    my $client_secret = $runtimeParameters->{password};
     my $tenant = $runtimeParameters->{tenant};
     my $app = $runtimeParameters->{app};
 
@@ -148,8 +146,8 @@ sub finalizeConfiguration {
         credential => [
             {
                 credentialName => $configName,
-                userName => $runtimeParameters->{clientId},
-                password => $runtimeParameters->{clientSecret},
+                userName => $runtimeParameters->{user},
+                password => $runtimeParameters->{password},
             },
             {
                 credentialName => $configName . '_tokens',
@@ -187,13 +185,9 @@ sub whoami {
       refresh_token => $r->{tokens_password}
     ];
 
-    print Dumper $formvars;
-
     my $ua = LWP::UserAgent->new;
 
     my $response = $ua->request(POST $url, $formvars);
-
-    print Dumper $response;
 
     unless($response->is_success) {
         die "Failed to refresh the token";
@@ -206,6 +200,9 @@ sub whoami {
     $request->header('Authorization', "Bearer $access_token");
     $response = $ua->request($request);
     print Dumper $response;
+
+    my $json = decode_json($response->content);
+    print Dumper $json;
 }
 ## === step ends ===
 # Please do not remove the marker above, it is used to place new procedures into this file.

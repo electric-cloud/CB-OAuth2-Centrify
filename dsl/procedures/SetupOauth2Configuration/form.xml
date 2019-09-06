@@ -23,16 +23,11 @@
     <label>Application ID:</label>
   </formElement>
   <formElement>
-    <type>entry</type>
-    <property>clientId</property>
+    <type>credential</type>
+    <property>credential</property>
+    <attachedAsParameterToStep>Initiate Redirect,Wait for the Code,Finalize Configuration</attachedAsParameterToStep>
     <required>1</required>
-    <label>Client ID (waits for the bug):</label>
-  </formElement>
-  <formElement>
-    <type>entry</type>
-    <property>clientSecret</property>
-    <required>1</required>
-    <label>Client Secret (waits for the bug):</label>
+    <label>Client ID and Secret:</label>
   </formElement>
   <formElement>
     <type>entry</type>

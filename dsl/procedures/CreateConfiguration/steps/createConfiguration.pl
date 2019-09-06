@@ -157,9 +157,7 @@ sub createAndAttachCredential {
 
     my $credObjectName = $credName eq 'credential' ? $configName : "${configName}_${credName}";
     # Create credential
-    info("Deleting old credential $credObjectName");
     eval { $ec->deleteCredential($projName, $credObjectName) };
-    info("Creating a new credential $credObjectName");
     $xpath = $ec->createCredential($projName, $credObjectName, $clientID, $clientSecret);
 
     # Give config the credential's real name
@@ -171,22 +169,14 @@ sub createAndAttachCredential {
 
     my $exists = 0;
     eval {
-        $exists = $ec->getAclEntry("user", $user,
-            {
-                projectName => $projName,
-                credentialName => $credObjectName
-            });
+        $exists = $ec->getAclEntry("user", $user, {projectName => $projName, credentialName => $credObjectName});
         1;
     } or do {
         $exists = 0;
     };
-
-    info("ACL exists; $exists");
     unless($exists) {
-        info("Creating ACL entry for the credential");
         $xpath = $ec->createAclEntry("user", $user,
-            {
-                projectName                => $projName,
+            { projectName                  => $projName,
                 credentialName             => $credObjectName,
                 readPrivilege              => 'allow',
                 modifyPrivilege            => 'allow',
@@ -280,6 +270,6 @@ sub createConfigurationPropertySheet {
     };
     info("Created configuration property sheet");
 }
-## === createConfiguration ends, checksum: 0b88aba200b64206cb87d7ee7b640891 ===
+## === createConfiguration ends, checksum: b0de6684407d0c1aacfb55cb2d423ea6 ===
 # user-defined code can be placed below this line
 # Do not edit the code above the line as it will be updated upon plugin upgrade
